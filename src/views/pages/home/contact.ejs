@@ -1,0 +1,95 @@
+<section class="page-section" id="contact">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Liên Hệ Với Chúng Tôi</h2>
+      <h3 class="section-subheading text-muted">
+        Gửi yêu cầu tư vấn hoặc lịch thí nghiệm, chúng tôi sẽ phản hồi sớm nhất.
+      </h3>
+    </div>
+
+    <form id="contactForm" action="/contact" method="POST">
+      <div class="row align-items-stretch mb-5">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Họ và Tên của bạn *"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email liên lạc *"
+              required
+            />
+          </div>
+          <div class="form-group mb-md-0">
+            <input
+              class="form-control"
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="Số điện thoại *"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group form-group-textarea mb-md-0">
+            <textarea
+              class="form-control"
+              id="message"
+              name="message"
+              placeholder="Nội dung yêu cầu *"
+              required
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button
+          class="btn btn-primary btn-xl text-uppercase"
+          id="submitButton"
+          type="submit"
+        >
+          Gửi Yêu Cầu
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  window.onload = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("success") === "true") {
+      Swal.fire({
+        title: "Gửi thành công!",
+        text: "Công ty Tân Thịnh đã nhận được thông tin của bạn.",
+        icon: "success",
+        confirmButtonText: "Đóng",
+        confirmButtonColor: "#2e7d32",
+      });
+
+      // Làm sạch URL (xóa ?success=true) để không hiện lại khi F5
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (urlParams.get("success") === "false") {
+      Swal.fire({
+        title: "Lỗi!",
+        text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+        icon: "error",
+        confirmButtonText: "Đóng",
+      });
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  };
+</script>
