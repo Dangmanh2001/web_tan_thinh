@@ -38,6 +38,7 @@ module.exports = {
         totalItems: count,
       });
     } catch (error) {
+      console.error("[service] render error:", error);
       res.status(500).send("Lỗi truy vấn dịch vụ");
     }
   },
