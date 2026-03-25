@@ -1,0 +1,74 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Quản lý Người dùng</h1>
+  <a href="/dashboard/users/create" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus"></i> Thêm mới
+  </a>
+</div>
+
+<% if (success === 'created') { %>
+<div class="alert alert-success">Tạo tài khoản thành công.</div>
+<% } else if (success === 'updated') { %>
+<div class="alert alert-success">Cập nhật tài khoản thành công.</div>
+<% } else if (success === 'deleted') { %>
+<div class="alert alert-success">Xóa tài khoản thành công.</div>
+<% } else if (success === 'self_delete_blocked') { %>
+<div class="alert alert-warning">Không thể xóa tài khoản đang đăng nhập.</div>
+<% } %>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Danh sách tài khoản</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên đăng nhập</th>
+            <th>Quyền</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (users.length === 0) { %>
+          <tr>
+            <td colspan="5" class="text-center">Chưa có tài khoản nào</td>
+          </tr>
+          <% } else { %>
+          <% users.forEach((u, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td>
+              <%= u.username %>
+              <% if (u.id === user.id) { %>
+              <span class="badge badge-secondary ml-1">Bạn</span>
+              <% } %>
+            </td>
+            <td>
+              <span class="badge badge-<%= u.role === 'admin' ? 'danger' : 'info' %>">
+                <%= u.role %>
+              </span>
+            </td>
+            <td><%= new Date(u.created_at).toLocaleString('vi-VN') %></td>
+            <td>
+              <a href="/dashboard/users/edit/<%= u.id %>" class="btn btn-warning btn-sm mb-1">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+              <% if (u.id !== user.id) { %>
+              <form action="/dashboard/users/delete/<%= u.id %>" method="POST" onsubmit="return confirm('Xác nhận xóa tài khoản này?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Xóa
+                </button>
+              </form>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

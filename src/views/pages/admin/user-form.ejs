@@ -1,0 +1,48 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800"><%= editUser ? 'Sửa tài khoản' : 'Thêm tài khoản' %></h1>
+  <a href="/dashboard/users" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left"></i> Quay lại
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+
+    <form action="<%= editUser ? '/dashboard/users/edit/' + editUser.id : '/dashboard/users/create' %>" method="POST">
+
+      <div class="form-group">
+        <label>Tên đăng nhập <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="username"
+          value="<%= editUser ? editUser.username : '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Mật khẩu
+          <% if (editUser) { %>
+          <span class="text-muted small">(để trống nếu không muốn đổi)</span>
+          <% } else { %>
+          <span class="text-danger">*</span>
+          <% } %>
+        </label>
+        <input type="password" class="form-control" name="password"
+          <%= editUser ? '' : 'required' %> minlength="6">
+      </div>
+
+      <div class="form-group">
+        <label>Quyền <span class="text-danger">*</span></label>
+        <select class="form-control" name="role" required>
+          <option value="admin"  <%= editUser && editUser.role === 'admin'  ? 'selected' : '' %>>Admin</option>
+          <option value="editor" <%= editUser && editUser.role === 'editor' ? 'selected' : '' %>>Editor</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> Lưu
+      </button>
+    </form>
+  </div>
+</div>

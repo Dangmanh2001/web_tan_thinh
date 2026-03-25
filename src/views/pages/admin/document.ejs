@@ -1,0 +1,94 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Quản lý Công bố năng lực</h1>
+  <a href="/dashboard/document/create" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus"></i> Thêm tài liệu
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Danh sách tài liệu PDF</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tiêu đề</th>
+            <th>File PDF</th>
+            <th>Ngày công bố</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (documents.length === 0) { %>
+          <tr>
+            <td colspan="6" class="text-center">Chưa có tài liệu nào</td>
+          </tr>
+          <% } else { %>
+          <% documents.forEach((doc, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= doc.title %></td>
+            <td>
+              <a href="<%= doc.file_path %>" target="_blank" class="btn btn-info btn-sm">
+                <i class="fas fa-file-pdf"></i> Xem PDF
+              </a>
+            </td>
+            <td><%= doc.published_at ? new Date(doc.published_at).toLocaleDateString('vi-VN') : '—' %></td>
+            <td><%= new Date(doc.created_at).toLocaleString('vi-VN') %></td>
+            <td>
+              <a href="/dashboard/document/edit/<%= doc.id %>" class="btn btn-warning btn-sm mb-1">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+              <form action="/dashboard/document/delete/<%= doc.id %>" method="POST"
+                onsubmit="return confirm('Xác nhận xóa tài liệu này?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Xóa
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phân trang -->
+    <% if (totalPages > 1) { %>
+    <%
+      const windowSize = 3;
+      let startPage = Math.max(1, currentPage - Math.floor(windowSize / 2));
+      let endPage = startPage + windowSize - 1;
+      if (endPage > totalPages) { endPage = totalPages; startPage = Math.max(1, endPage - windowSize + 1); }
+    %>
+    <div class="d-flex justify-content-center mt-3">
+      <ul class="pagination">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+        </li>
+        <% if (startPage > 1) { %>
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+        <% if (startPage > 2) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <% } %>
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+        <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <li class="page-item"><a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a></li>
+        <% } %>
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
+
+  </div>
+</div>

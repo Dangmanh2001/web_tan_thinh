@@ -36,11 +36,12 @@
               
               <% if(service.content) { %>
                 <div class="service-content-preview small text-justify <%= isFeatured ? 'text-light' : 'text-muted' %>">
-                  <% 
-                    // Loại bỏ các ký hiệu ## và ### để đoạn preview nhìn chuyên nghiệp hơn
+                  <%
                     let cleanPreview = service.content
-                                      .replace(/#{2,3}\s/g, '') // Xóa '## ' và '### '
-                                      .replace(/\n/g, ' ');     // Thay xuống dòng bằng dấu cách để chạy dòng mượt hơn
+                      .replace(/<[^>]*>/g, ' ')
+                      .replace(/&nbsp;/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim();
                   %>
                   <%= cleanPreview %>
                 </div>
@@ -48,7 +49,7 @@
             </div>
 
             <div class="card-footer bg-transparent border-0 pb-4 text-center mt-auto">
-              <a href="/services/<%= service.slug %>" class="btn <%= isFeatured ? 'btn-light text-success' : 'btn-outline-success' %> btn-sm px-4 shadow-sm fw-bold rounded-pill">
+              <a href="/services/<%= service.id %>" class="btn <%= isFeatured ? 'btn-light text-success' : 'btn-outline-success' %> btn-sm px-4 shadow-sm fw-bold rounded-pill">
                 Chi tiết dịch vụ
               </a>
             </div>
@@ -56,6 +57,51 @@
         </div>
       <% }) %>
     </div>
+
+    <!-- Phân trang -->
+    <% if (totalPages > 1) { %>
+    <%
+      const windowSize = 3;
+      let startPage = Math.max(1, currentPage - Math.floor(windowSize / 2));
+      let endPage = startPage + windowSize - 1;
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - windowSize + 1);
+      }
+    %>
+    <div class="d-flex justify-content-center mt-5">
+      <ul class="pagination">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+        </li>
+
+        <% if (startPage > 1) { %>
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+        <% if (startPage > 2) { %>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% } %>
+        <% } %>
+
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+
+        <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% } %>
+        <li class="page-item"><a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a></li>
+        <% } %>
+
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
+
   </div>
 </section>
 

@@ -1,0 +1,107 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Kết quả tìm kiếm: "<%= q %>"</h1>
+</div>
+
+<% const total = posts.length + projects.length + services.length + contacts.length + documents.length; %>
+<% if (total === 0) { %>
+<div class="alert alert-warning">Không tìm thấy kết quả nào cho "<strong><%= q %></strong>".</div>
+<% } %>
+
+<!-- Tin tức -->
+<% if (posts.length > 0) { %>
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-newspaper mr-2"></i>Tin tức (<%= posts.length %>)</h6>
+    <a href="/dashboard/news" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <% posts.forEach(post => { %>
+      <a href="/dashboard/news/edit/<%= post.id %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-file-alt text-muted mr-2"></i><%= post.title %></span>
+        <small class="text-muted"><%= new Date(post.created_at).toLocaleDateString('vi-VN') %></small>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Dự án -->
+<% if (projects.length > 0) { %>
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-hard-hat mr-2"></i>Dự án (<%= projects.length %>)</h6>
+    <a href="/dashboard/portfolio" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <% projects.forEach(project => { %>
+      <a href="/dashboard/portfolio/edit/<%= project.id %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-hard-hat text-muted mr-2"></i><%= project.name %></span>
+        <small class="text-muted"><%= project.location || '' %></small>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Dịch vụ -->
+<% if (services.length > 0) { %>
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-concierge-bell mr-2"></i>Dịch vụ (<%= services.length %>)</h6>
+    <a href="/dashboard/service" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <% services.forEach(service => { %>
+      <a href="/dashboard/service/edit/<%= service.id %>" class="list-group-item list-group-item-action">
+        <i class="fas fa-concierge-bell text-muted mr-2"></i><%= service.name %>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Liên hệ -->
+<% if (contacts.length > 0) { %>
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-envelope mr-2"></i>Liên hệ (<%= contacts.length %>)</h6>
+    <a href="/dashboard/contact" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <% contacts.forEach(contact => { %>
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-user text-muted mr-2"></i><%= contact.name %> — <small class="text-muted"><%= contact.email %></small></span>
+        <small class="text-muted"><%= new Date(contact.created_at).toLocaleDateString('vi-VN') %></small>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Tài liệu -->
+<% if (documents.length > 0) { %>
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-file-pdf mr-2"></i>Công bố năng lực (<%= documents.length %>)</h6>
+    <a href="/dashboard/document" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <% documents.forEach(doc => { %>
+      <a href="/dashboard/document/edit/<%= doc.id %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-file-pdf text-danger mr-2"></i><%= doc.title %></span>
+        <small class="text-muted"><%= doc.published_at ? new Date(doc.published_at).toLocaleDateString('vi-VN') : '' %></small>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<% } %>

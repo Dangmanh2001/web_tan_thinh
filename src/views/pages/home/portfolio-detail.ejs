@@ -1,0 +1,91 @@
+<section class="page-section" style="padding-top: 100px;">
+  <div class="container">
+
+    <div class="mb-4">
+      <a href="/portfolio" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Quay lại dự án
+      </a>
+    </div>
+
+    <!-- Ảnh bìa + thông tin -->
+    <div class="row g-4 mb-5">
+      <div class="col-lg-7">
+        <% if (project.thumbnail) { %>
+        <img src="<%= project.thumbnail %>" alt="<%= project.name %>"
+          class="img-fluid rounded shadow-sm w-100"
+          style="max-height:460px; object-fit:cover;">
+        <% } else { %>
+        <div class="rounded bg-light d-flex align-items-center justify-content-center shadow-sm"
+          style="height:300px;">
+          <i class="fas fa-hard-hat fa-4x text-muted"></i>
+        </div>
+        <% } %>
+      </div>
+      <div class="col-lg-5 d-flex flex-column justify-content-center">
+        <h2 class="fw-bold mb-3" style="color:#2e7d32;"><%= project.name %></h2>
+        <% if (project.location) { %>
+        <p class="mb-2">
+          <i class="fas fa-map-marker-alt me-2 text-success"></i>
+          <strong>Địa điểm:</strong> <%= project.location %>
+        </p>
+        <% } %>
+        <p class="mb-2">
+          <i class="fas fa-calendar-alt me-2 text-success"></i>
+          <strong>Ngày đăng:</strong>
+          <%= new Date(project.created_at).toLocaleDateString('vi-VN') %>
+        </p>
+        <% if (project.description) { %>
+        <hr>
+        <p class="text-muted" style="white-space: pre-line;"><%= project.description %></p>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Bộ sưu tập ảnh -->
+    <% if (project.images && project.images.length > 0) { %>
+    <div class="mb-3">
+      <h4 class="fw-bold text-uppercase" style="color:#2e7d32;">
+        <i class="fas fa-images me-2"></i>Hình ảnh dự án
+      </h4>
+      <hr>
+    </div>
+    <div class="row g-3">
+      <% project.images.forEach((img, idx) => { %>
+      <div class="col-lg-4 col-md-6">
+        <a href="<%= img.image %>" data-bs-toggle="modal" data-bs-target="#imgModal"
+          data-src="<%= img.image %>" class="img-thumb-link">
+          <img src="<%= img.image %>" alt="Ảnh dự án <%= idx + 1 %>"
+            class="img-fluid rounded shadow-sm w-100"
+            style="height:200px; object-fit:cover; cursor:pointer; transition:opacity .2s;"
+            onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+        </a>
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+  </div>
+</section>
+
+<!-- Modal xem ảnh phóng to -->
+<div class="modal fade" id="imgModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark border-0">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-2">
+        <img id="modalImg" src="" alt="" class="img-fluid rounded" style="max-height:80vh;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.img-thumb-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('modalImg').src = this.getAttribute('data-src');
+    });
+  });
+</script>

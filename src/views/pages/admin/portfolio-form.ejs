@@ -1,0 +1,71 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">
+    <%= project ? 'Chỉnh sửa dự án' : 'Thêm dự án mới' %>
+  </h1>
+  <a href="/dashboard/portfolio" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left"></i> Quay lại
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <form action="<%= project ? '/dashboard/portfolio/edit/' + project.id : '/dashboard/portfolio/create' %>"
+      method="POST" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label>Tên dự án <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="name"
+          value="<%= project ? project.name : '' %>" required
+          placeholder="Ví dụ: Công trình Cầu Đồng Đăng – Trà Lĩnh">
+      </div>
+
+      <div class="form-group">
+        <label>Địa điểm</label>
+        <input type="text" class="form-control" name="location"
+          value="<%= project ? (project.location || '') : '' %>"
+          placeholder="Ví dụ: Cao Bằng">
+      </div>
+
+      <div class="form-group">
+        <label>Mô tả</label>
+        <textarea class="form-control" name="description" rows="4"
+          placeholder="Mô tả ngắn về dự án..."><%= project ? (project.description || '') : '' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Ảnh bìa (thumbnail)</label><br>
+        <% if (project && project.thumbnail) { %>
+        <img src="<%= project.thumbnail %>" style="width:140px;height:100px;object-fit:cover;border-radius:6px;margin-bottom:8px;display:block;">
+        <small class="text-muted d-block mb-1">Để trống nếu không muốn thay đổi.</small>
+        <% } %>
+        <input type="file" class="form-control-file" name="thumbnail" accept="image/*">
+      </div>
+
+      <div class="form-group">
+        <label>Ảnh bộ sưu tập (có thể chọn nhiều ảnh)</label><br>
+        <% if (images && images.length > 0) { %>
+        <div class="mb-2">
+          <p class="mb-1"><strong>Ảnh hiện có:</strong></p>
+          <div class="d-flex flex-wrap gap-2">
+            <% images.forEach(img => { %>
+            <div class="position-relative d-inline-block me-2 mb-2">
+              <img src="<%= img.image %>" style="width:100px;height:75px;object-fit:cover;border-radius:4px;border:1px solid #ddd;">
+              <div class="form-check mt-1">
+                <input class="form-check-input" type="checkbox" name="delete_images" value="<%= img.id %>" id="del-<%= img.id %>">
+                <label class="form-check-label text-danger small" for="del-<%= img.id %>">Xóa ảnh này</label>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+        <input type="file" class="form-control-file" name="images" accept="image/*" multiple>
+        <small class="text-muted">Giữ Ctrl để chọn nhiều ảnh cùng lúc.</small>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> <%= project ? 'Cập nhật' : 'Lưu dự án' %>
+      </button>
+    </form>
+  </div>
+</div>

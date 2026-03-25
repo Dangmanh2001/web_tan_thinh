@@ -1,0 +1,99 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Quản lý Tin tức</h1>
+  <a href="/dashboard/news/create" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus"></i> Thêm mới
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Danh sách bài viết</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Ảnh</th>
+            <th>Tiêu đề</th>
+            <th>Danh mục</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (posts.length === 0) { %>
+          <tr>
+            <td colspan="6" class="text-center">Chưa có bài viết nào</td>
+          </tr>
+          <% } else { %>
+          <% posts.forEach((post, index) => { %>
+          <tr>
+            <td><%= (currentPage - 1) * 10 + index + 1 %></td>
+            <td>
+              <% if (post.thumbnail) { %>
+              <img src="<%= post.thumbnail %>" alt="" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
+              <% } else { %>
+              <span class="text-muted">Chưa có ảnh</span>
+              <% } %>
+            </td>
+            <td><%= post.title %></td>
+            <td><%= post.category ? post.category.name : '-' %></td>
+            <td><%= new Date(post.created_at).toLocaleString('vi-VN') %></td>
+            <td>
+              <a href="/dashboard/news/edit/<%= post.id %>" class="btn btn-warning btn-sm mb-1">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+              <form action="/dashboard/news/delete/<%= post.id %>" method="POST" onsubmit="return confirm('Xác nhận xóa?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Xóa
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phân trang -->
+    <% if (totalPages > 1) { %>
+    <%
+      const windowSize = 3;
+      let startPage = Math.max(1, currentPage - Math.floor(windowSize / 2));
+      let endPage = startPage + windowSize - 1;
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - windowSize + 1);
+      }
+    %>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <small class="text-muted">Tổng: <%= totalItems %> bài viết</small>
+      <ul class="pagination mb-0">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+        </li>
+        <% if (startPage > 1) { %>
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+        <% if (startPage > 2) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <% } %>
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+        <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <li class="page-item"><a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a></li>
+        <% } %>
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
+
+  </div>
+</div>

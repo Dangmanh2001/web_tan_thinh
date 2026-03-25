@@ -1,0 +1,145 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Quản lý Danh mục</h1>
+</div>
+
+<div class="row">
+  <!-- Form thêm mới -->
+  <div class="col-lg-4">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Thêm danh mục mới</h6>
+      </div>
+      <div class="card-body">
+        <form action="/dashboard/category/create" method="POST">
+          <div class="form-group">
+            <label>Tên danh mục <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <input type="hidden" name="type" value="post">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-plus"></i> Thêm
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách -->
+  <div class="col-lg-8">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách danh mục</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tên</th>
+                <th>Slug</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (categories.length === 0) { %>
+              <tr>
+                <td colspan="5" class="text-center">Chưa có danh mục nào</td>
+              </tr>
+              <% } else { %>
+              <% categories.forEach((cat, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= cat.name %></td>
+                <td><small class="text-muted"><%= cat.slug %></small></td>
+                <td>
+                  <button class="btn btn-warning btn-sm mb-1"
+                    onclick="openEdit(<%= cat.id %>, '<%= cat.name %>')">
+                    <i class="fas fa-edit"></i> Sửa
+                  </button>
+                  <form action="/dashboard/category/delete/<%= cat.id %>" method="POST"
+                    onsubmit="return confirm('Xác nhận xóa?')" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="fas fa-trash"></i> Xóa
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Phân trang -->
+        <% if (totalPages > 1) { %>
+        <%
+          const windowSize = 3;
+          let startPage = Math.max(1, currentPage - Math.floor(windowSize / 2));
+          let endPage = startPage + windowSize - 1;
+          if (endPage > totalPages) { endPage = totalPages; startPage = Math.max(1, endPage - windowSize + 1); }
+        %>
+        <div class="d-flex justify-content-center mt-3">
+          <ul class="pagination">
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+            </li>
+            <% if (startPage > 1) { %>
+            <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+            <% if (startPage > 2) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+            <% } %>
+            <% for (let i = startPage; i <= endPage; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            </li>
+            <% } %>
+            <% if (endPage < totalPages) { %>
+            <% if (endPage < totalPages - 1) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+            <li class="page-item"><a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a></li>
+            <% } %>
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+              <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+            </li>
+          </ul>
+        </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Sửa -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="editForm" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Sửa danh mục</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Tên danh mục <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="editName" name="name" required>
+          </div>
+          <input type="hidden" name="type" value="post">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openEdit(id, name) {
+    document.getElementById('editForm').action = '/dashboard/category/edit/' + id;
+    document.getElementById('editName').value = name;
+    $('#editModal').modal('show');
+  }
+</script>

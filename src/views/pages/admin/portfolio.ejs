@@ -1,0 +1,80 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Quản lý Dự án</h1>
+  <a href="/dashboard/portfolio/create" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus"></i> Thêm mới
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Danh sách dự án (<%= totalItems %>)</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Ảnh bìa</th>
+            <th>Tên dự án</th>
+            <th>Địa điểm</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (projects.length === 0) { %>
+          <tr>
+            <td colspan="6" class="text-center">Chưa có dự án nào</td>
+          </tr>
+          <% } else { %>
+          <% projects.forEach((project, index) => { %>
+          <tr>
+            <td><%= (currentPage - 1) * 10 + index + 1 %></td>
+            <td>
+              <% if (project.thumbnail) { %>
+              <img src="<%= project.thumbnail %>" style="width:70px;height:50px;object-fit:cover;border-radius:4px;">
+              <% } else { %>
+              <span class="text-muted">—</span>
+              <% } %>
+            </td>
+            <td><%= project.name %></td>
+            <td><%= project.location || '—' %></td>
+            <td><%= new Date(project.created_at).toLocaleString('vi-VN') %></td>
+            <td>
+              <a href="/dashboard/portfolio/edit/<%= project.id %>" class="btn btn-warning btn-sm mb-1">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+              <form action="/dashboard/portfolio/delete/<%= project.id %>" method="POST"
+                onsubmit="return confirm('Xác nhận xóa dự án này?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Xóa
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (totalPages > 1) { %>
+    <div class="d-flex justify-content-center mt-3">
+      <ul class="pagination">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+        </li>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
+  </div>
+</div>

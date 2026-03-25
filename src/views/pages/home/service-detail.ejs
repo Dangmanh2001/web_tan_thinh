@@ -1,0 +1,62 @@
+<section class="page-section" id="service-detail">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <% if (service.thumbnail) { %>
+        <img src="<%= service.thumbnail %>" alt="<%= service.name %>"
+          style="width:100%; max-height:350px; object-fit:cover; border-radius:8px; margin-bottom:2rem;">
+        <% } %>
+
+        <h1 class="fw-bold mb-3" style="color:#2e7d32"><%= service.name %></h1>
+
+        <% if (service.description) { %>
+        <p class="lead text-muted mb-4"><%= service.description %></p>
+        <% } %>
+
+        <hr class="mb-4">
+
+        <div class="service-content">
+          <%- service.content %>
+        </div>
+
+        <div class="mt-5">
+          <a href="/service" class="btn btn-outline-success rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại dịch vụ
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.service-content h1,
+.service-content h2,
+.service-content h3 {
+  color: #2e7d32;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.service-content p {
+  line-height: 1.8;
+  color: #444;
+}
+.service-content ul,
+.service-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.service-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.7;
+}
+.service-content strong { color: #222; }
+.service-content blockquote {
+  border-left: 4px solid #2e7d32;
+  padding-left: 1rem;
+  color: #666;
+  font-style: italic;
+}
+</style>

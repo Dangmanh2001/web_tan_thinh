@@ -2,31 +2,37 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="section-heading text-uppercase" style="color: #2e7d32">Tin Tức & Sự Kiện</h2>
-      <h3 class="section-subheading text-muted">Cập nhật hoạt động mới nhất tại Tân Thịnh.</h3>
+      <h3 class="section-subheading text-muted">Cập nhật hoạt động mới nhất tại Tấn Thịnh.</h3>
     </div>
 
     <div class="row" id="news-container">
       <% if (posts && posts.length > 0) { %>
-        <% posts.forEach((post, index) => { %>
-          <div class="col-lg-4 col-md-6 mb-4 <%= index >= 3 ? 'd-none extra-post' : '' %>">
+        <% posts.forEach((post) => { %>
+          <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 border-0 shadow-sm overflow-hidden">
               <div class="position-relative">
-                <img class="card-img-top" src="<%= post.thumbnail ? '/assets/img/posts/' + post.thumbnail : 'https://via.placeholder.com/800x450' %>" alt="<%= post.title %>" />
+                <img class="card-img-top" src="<%= post.thumbnail ? post.thumbnail : 'https://via.placeholder.com/800x450' %>" alt="<%= post.title %>" />
+                <% if (post.category) { %>
                 <div class="badge bg-success position-absolute start-0 top-0 m-3 px-3 py-2">
-                  <%= post.Category ? post.Category.name : 'Tin tức' %>
+                  <%= post.category.name %>
                 </div>
+                <% } %>
               </div>
               <div class="card-body p-4">
                 <div class="text-muted small mb-2">
-                  <i class="far fa-calendar-alt me-1"></i> 
+                  <i class="far fa-calendar-alt me-1"></i>
                   <%= new Date(post.created_at).toLocaleDateString('vi-VN') %>
                 </div>
                 <h5 class="card-title fw-bold line-clamp-2"><%= post.title %></h5>
                 <p class="card-text text-muted small line-clamp-3">
-                  <% let cleanContent = post.content.replace(/#{2,3}\s/g, '').replace(/\n/g, ' '); %>
+                  <%
+                    let cleanContent = post.content
+                      ? post.content.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+                      : '';
+                  %>
                   <%= cleanContent.substring(0, 120) %>...
                 </p>
-                <a href="/news/<%= post.slug %>" class="btn btn-link text-decoration-none p-0" style="color: #2e7d32; font-weight: 600">
+                <a href="/news/<%= post.id %>" class="btn btn-link text-decoration-none p-0" style="color: #2e7d32; font-weight: 600">
                   Xem chi tiết <i class="fas fa-arrow-right ms-1"></i>
                 </a>
               </div>
@@ -38,33 +44,46 @@
       <% } %>
     </div>
 
-    <% if (posts && posts.length > 3) { %>
-      <div class="text-center mt-5" id="view-all-container">
-        <button id="btn-view-all" class="btn btn-outline-dark btn-xl text-uppercase">
-          Xem tất cả tin tức
-        </button>
-      </div>
+    <!-- Phân trang -->
+    <% if (totalPages > 1) { %>
+    <%
+      const windowSize = 3;
+      let startPage = Math.max(1, currentPage - Math.floor(windowSize / 2));
+      let endPage = startPage + windowSize - 1;
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - windowSize + 1);
+      }
+    %>
+    <div class="d-flex justify-content-center mt-5">
+      <ul class="pagination">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">«</a>
+        </li>
+        <% if (startPage > 1) { %>
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+        <% if (startPage > 2) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <% } %>
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+        <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %><li class="page-item disabled"><span class="page-link">...</span></li><% } %>
+        <li class="page-item"><a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a></li>
+        <% } %>
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">»</a>
+        </li>
+      </ul>
+    </div>
     <% } %>
+
   </div>
 </section>
 
-<script>
-  // Xử lý sự kiện bấm nút Xem tất cả
-  document.getElementById('btn-view-all')?.addEventListener('click', function() {
-    // Tìm tất cả các bài viết đang bị ẩn
-    const extraPosts = document.querySelectorAll('.extra-post');
-    extraPosts.forEach(post => {
-      post.classList.remove('d-none'); // Hiển thị bài viết
-      post.classList.add('animate__animated', 'animate__fadeIn'); // Thêm hiệu ứng nếu muốn
-    });
-    
-    // Ẩn nút "Xem tất cả" sau khi đã hiện hết bài
-    document.getElementById('view-all-container').classList.add('d-none');
-  });
-</script>
-
 <style>
-  /* Giữ nguyên các Style cũ của bạn */
   .card { transition: transform 0.3s ease-in-out; }
   .card:hover { transform: translateY(-10px); }
   .card-img-top { height: 220px; object-fit: cover; }

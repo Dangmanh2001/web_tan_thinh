@@ -1,0 +1,55 @@
+<section class="page-section" id="news-detail">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <% if (post.thumbnail) { %>
+        <img src="<%= post.thumbnail %>" alt="<%= post.title %>"
+          style="width:100%; max-height:350px; object-fit:cover; border-radius:8px; margin-bottom:2rem;">
+        <% } %>
+
+        <% if (post.category) { %>
+        <span class="badge bg-success px-3 py-2 mb-3" style="font-size:0.85rem;"><%= post.category.name %></span>
+        <% } %>
+
+        <h1 class="fw-bold mb-2"><%= post.title %></h1>
+
+        <div class="text-muted small mb-4">
+          <i class="far fa-calendar-alt me-1"></i>
+          <%= new Date(post.created_at).toLocaleDateString('vi-VN') %>
+        </div>
+
+        <hr class="mb-4">
+
+        <div class="news-content">
+          <%- post.content %>
+        </div>
+
+        <div class="mt-5">
+          <a href="/news" class="btn btn-outline-success rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại tin tức
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.news-content h1, .news-content h2, .news-content h3 {
+  color: #2e7d32;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.news-content p { line-height: 1.8; color: #444; }
+.news-content ul, .news-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+.news-content li { margin-bottom: 0.4rem; line-height: 1.7; }
+.news-content strong { color: #222; }
+.news-content blockquote {
+  border-left: 4px solid #2e7d32;
+  padding-left: 1rem;
+  color: #666;
+  font-style: italic;
+}
+</style>

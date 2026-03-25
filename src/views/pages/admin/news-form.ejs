@@ -1,0 +1,72 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800"><%= post ? 'Sửa bài viết' : 'Thêm bài viết' %></h1>
+  <a href="/dashboard/news" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left"></i> Quay lại
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <form action="<%= post ? '/dashboard/news/edit/' + post.id : '/dashboard/news/create' %>" method="POST" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label>Tiêu đề <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="title" value="<%= post ? post.title : '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Danh mục</label>
+        <select class="form-control" name="category_id">
+          <option value="">-- Chọn danh mục --</option>
+          <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>" <%= post && post.category_id == cat.id ? 'selected' : '' %>>
+            <%= cat.name %>
+          </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nội dung</label>
+        <textarea id="newsContent" name="content" rows="8"><%= post ? post.content : '' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Ảnh thumbnail</label><br>
+        <% if (post && post.thumbnail) { %>
+        <img src="<%= post.thumbnail %>" alt="" style="width:100px; height:100px; object-fit:cover; border-radius:4px; margin-bottom:8px; display:block;">
+        <% } %>
+        <input type="file" class="form-control-file" name="thumbnail" accept="image/*">
+        <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> Lưu
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+  ClassicEditor
+    .create(document.querySelector('#newsContent'), {
+      toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', 'link', '|',
+                'undo', 'redo'],
+      heading: {
+        options: [
+          { model: 'paragraph', title: 'Đoạn văn', class: 'ck-heading_paragraph' },
+          { model: 'heading1', view: 'h1', title: 'Tiêu đề 1', class: 'ck-heading_heading1' },
+          { model: 'heading2', view: 'h2', title: 'Tiêu đề 2', class: 'ck-heading_heading2' },
+          { model: 'heading3', view: 'h3', title: 'Tiêu đề 3', class: 'ck-heading_heading3' },
+        ]
+      }
+    })
+    .then(editor => {
+      document.querySelector('form').addEventListener('submit', () => {
+        document.querySelector('#newsContent').value = editor.getData();
+      });
+    });
+</script>
