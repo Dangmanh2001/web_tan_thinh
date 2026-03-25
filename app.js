@@ -23,7 +23,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 tiếng
-  })
+  }),
 );
 app.use(express.static(path.join(__dirname, "src", "public")));
 
@@ -43,7 +43,5 @@ app.use((req, res) => {
   res.status(404).render("pages/404", { layout: false });
 });
 
-const PORT = process.env.PORT || 3100;
-app.listen(PORT, () => {
-  console.log(`Server chạy tại http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 3300;
+app.listen(PORT);
