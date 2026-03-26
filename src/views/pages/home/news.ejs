@@ -7,20 +7,42 @@
 
     <div class="row" id="news-container">
       <% if (posts && posts.length > 0) { %>
+        <% 
+          // CẬP NHẬT: Khai báo hàm decodeHtml một lần ở ngoài vòng lặp để tối ưu hiệu suất
+          function decodeHtml(html) {
+            if(!html) return '';
+            return String(html)
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/&amp;/g, "&")
+                .replace(/&nbsp;/g, " ")
+                // Các ký tự tiếng Việt có dấu mã hóa phổ biến từ CKEditor
+                .replace(/&agrave;/g, "à").replace(/&aacute;/g, "á").replace(/&acirc;/g, "â").replace(/&atilde;/g, "ã")
+                .replace(/&egrave;/g, "è").replace(/&eacute;/g, "é").replace(/&ecirc;/g, "ê")
+                .replace(/&igrave;/g, "ì").replace(/&iacute;/g, "í")
+                .replace(/&ograve;/g, "ò").replace(/&oacute;/g, "ó").replace(/&ocirc;/g, "ô").replace(/&otilde;/g, "õ")
+                .replace(/&ugrave;/g, "ù").replace(/&uacute;/g, "ú")
+                .replace(/&yacute;/g, "ý")
+                .replace(/&ndash;/g, "-").replace(/&ldquo;/g, "“").replace(/&rdquo;/g, "”");
+          }
+        %>
+
         <% posts.forEach((post) => { %>
           <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 border-0 shadow-sm overflow-hidden">
-<div class="position-relative">
-  <% if (post.thumbnail) { %>
-    <img class="card-img-top" src="<%= post.thumbnail %>" alt="<%= post.title %>" />
-  <% } %>
+              <div class="position-relative">
+                <% if (post.thumbnail) { %>
+                  <img class="card-img-top" src="<%= post.thumbnail %>" alt="<%= post.title %>" />
+                <% } %>
 
-  <% if (post.category) { %>
-  <div class="badge bg-success position-absolute start-0 top-0 m-3 px-3 py-2">
-    <%= post.category.name %>
-  </div>
-  <% } %>
-</div>
+                <% if (post.category) { %>
+                <div class="badge bg-success position-absolute start-0 top-0 m-3 px-3 py-2">
+                  <%= post.category.name %>
+                </div>
+                <% } %>
+              </div>
               <div class="card-body p-4">
                 <div class="text-muted small mb-2">
                   <i class="far fa-calendar-alt me-1"></i>
@@ -29,11 +51,13 @@
                 <h5 class="card-title fw-bold line-clamp-2"><%= post.title %></h5>
                 <p class="card-text text-muted small line-clamp-3">
                   <%
-                    let cleanContent = post.content
-                      ? post.content.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+                    // CẬP NHẬT: Chạy qua hàm decodeHtml trước, sau đó mới dùng regex xóa các thẻ HTML < >
+                    let decoded = decodeHtml(post.content);
+                    let cleanContent = decoded
+                      ? decoded.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
                       : '';
                   %>
-                  <%= cleanContent.substring(0, 120) %>...
+                  <%= cleanContent.substring(0, 120) %><%= cleanContent.length > 120 ? '...' : '' %>
                 </p>
                 <a href="/news/<%= post.id %>" class="btn btn-link text-decoration-none p-0" style="color: #2e7d32; font-weight: 600">
                   Xem chi tiết <i class="fas fa-arrow-right ms-1"></i>
@@ -47,7 +71,6 @@
       <% } %>
     </div>
 
-    <!-- Phân trang -->
     <% if (totalPages > 1) { %>
     <%
       const windowSize = 3;
