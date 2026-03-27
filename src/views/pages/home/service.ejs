@@ -16,7 +16,7 @@
           .replace(/&ograve;/g, 'ò').replace(/&oacute;/g, 'ó').replace(/&ocirc;/g, 'ô').replace(/&otilde;/g, 'õ')
           .replace(/&ugrave;/g, 'ù').replace(/&uacute;/g, 'ú').replace(/&ucirc;/g, 'û')
           .replace(/&yacute;/g, 'ý').replace(/&ndash;/g, '-').replace(/&mdash;/g, '—')
-          .replace(/&ldquo;/g, '"').replace(/&rdquo;/g, '"').replace(/&lsquo;/g, ''').replace(/&rsquo;/g, ''')
+          .replace(/&ldquo;/g, '\u201C').replace(/&rdquo;/g, '\u201D').replace(/&lsquo;/g, '\u2018').replace(/&rsquo;/g, '\u2019')
           .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)));
       }
     %>
