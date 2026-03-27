@@ -16,7 +16,7 @@
             
             <div class="service-icon-box text-center py-4" style="height: 120px; display: flex; align-items: center; justify-content: center;">
               <% if(service.thumbnail) { %>
-                <img src="/assets/img/services/<%= service.thumbnail %>" alt="<%= service.name %>" style="max-width: 70px; max-height: 70px; object-fit: contain;">
+                <img src="<%= service.thumbnail %>" alt="<%= service.name %>" style="max-width: 70px; max-height: 70px; object-fit: contain;">
               <% } else { %>
                 <i class="fas fa-flask fa-3x" style="<%= isFeatured ? 'color: #ffffff' : 'color: #2e7d32' %>"></i>
               <% } %>
@@ -37,9 +37,11 @@
               <% if(service.content) { %>
                 <div class="service-content-preview small text-justify <%= isFeatured ? 'text-light' : 'text-muted' %>">
                   <%
+                    const htmlEntities = {'&nbsp;':' ','&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'",'&aacute;':'á','&agrave;':'à','&acirc;':'â','&atilde;':'ã','&auml;':'ä','&aring;':'å','&Aacute;':'Á','&Agrave;':'À','&Acirc;':'Â','&eacute;':'é','&egrave;':'è','&ecirc;':'ê','&euml;':'ë','&Eacute;':'É','&Egrave;':'È','&Ecirc;':'Ê','&iacute;':'í','&igrave;':'ì','&icirc;':'î','&Iacute;':'Í','&oacute;':'ó','&ograve;':'ò','&ocirc;':'ô','&otilde;':'õ','&ouml;':'ö','&Oacute;':'Ó','&Ocirc;':'Ô','&Otilde;':'Õ','&uacute;':'ú','&ugrave;':'ù','&ucirc;':'û','&uuml;':'ü','&Uacute;':'Ú','&yacute;':'ý','&Yacute;':'Ý','&ntilde;':'ñ','&ccedil;':'ç','&lsquo;':'\u2018','&rsquo;':'\u2019','&ldquo;':'\u201C','&rdquo;':'\u201D','&ndash;':'–','&mdash;':'—','&hellip;':'…'};
                     let cleanPreview = service.content
                       .replace(/<[^>]*>/g, ' ')
-                      .replace(/&nbsp;/g, ' ')
+                      .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)))
+                      .replace(/&[a-z]+;/gi, m => htmlEntities[m] || m)
                       .replace(/\s+/g, ' ')
                       .trim();
                   %>
