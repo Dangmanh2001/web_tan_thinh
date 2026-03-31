@@ -1,44 +1,89 @@
+<!-- Công bố năng lực -->
+<% if (documents && documents.length > 0) { %>
+<section class="page-section bg-light" id="cong-bo-nang-luc-home">
+  <div class="container">
+    <ul class="nav nav-tabs mb-4" id="docTabsHome" role="tablist">
+      <% documents.forEach((doc, index) => { %>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link <%= index === 0 ? 'active' : '' %>"
+          data-bs-toggle="tab"
+          data-bs-target="#pane-home-<%= doc.id %>"
+          type="button" role="tab">
+          <i class="fas fa-file-pdf me-1" style="color: #e53935;"></i>
+          <%= doc.title %>
+          <% if (doc.published_at) { %>
+          <small class="text-muted ms-1">(<%= new Date(doc.published_at).toLocaleDateString('vi-VN') %>)</small>
+          <% } %>
+        </button>
+      </li>
+      <% }) %>
+    </ul>
+
+    <div class="tab-content" id="docTabsHomeContent">
+      <% documents.forEach((doc, index) => { %>
+      <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane-home-<%= doc.id %>" role="tabpanel">
+        <div class="card shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center" style="background:#f8f9fa;">
+            <span class="fw-bold"><i class="fas fa-file-pdf me-2" style="color:#e53935;"></i><%= doc.title %></span>
+            <div class="d-flex gap-2">
+              <a href="<%= doc.file_path %>" download class="btn btn-sm btn-outline-success">
+                <i class="fas fa-download me-1"></i> Tải về
+              </a>
+              <a href="/cong-bo-nang-luc" class="btn btn-sm btn-outline-secondary">
+                Xem tất cả
+              </a>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <iframe src="<%= doc.file_path %>" style="width:100%; height:700px; border:none;" title="<%= doc.title %>">
+              <p>Trình duyệt không hỗ trợ PDF. <a href="<%= doc.file_path %>">Tải về tại đây</a>.</p>
+            </iframe>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <% if (totalDocPages > 1) { %>
+    <div class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
+        <li class="page-item <%= currentDocPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?docPage=<%= currentDocPage - 1 %>#cong-bo-nang-luc-home">«</a>
+        </li>
+        <% for (let i = 1; i <= totalDocPages; i++) { %>
+        <li class="page-item <%= i === currentDocPage ? 'active' : '' %>">
+          <a class="page-link" href="?docPage=<%= i %>#cong-bo-nang-luc-home"><%= i %></a>
+        </li>
+        <% } %>
+        <li class="page-item <%= currentDocPage === totalDocPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?docPage=<%= currentDocPage + 1 %>#cong-bo-nang-luc-home">»</a>
+        </li>
+      </ul>
+    </div>
+    <% } %>
+  </div>
+</section>
+<% } %>
+
 <!-- Clients-->
 <div class="py-5">
   <div class="container">
     <div class="row align-items-center">
       <div class="col-md-3 col-sm-6 my-3">
-        <a href="#!"
-          ><img
-            class="img-fluid img-brand d-block mx-auto"
-            src="/assets/img/logos/microsoft.svg"
-            alt="..."
-            aria-label="Microsoft Logo"
-        /></a>
+        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="/assets/img/logos/microsoft.svg" alt="..." aria-label="Microsoft Logo"/></a>
       </div>
       <div class="col-md-3 col-sm-6 my-3">
-        <a href="#!"
-          ><img
-            class="img-fluid img-brand d-block mx-auto"
-            src="/assets/img/logos/google.svg"
-            alt="..."
-            aria-label="Google Logo"
-        /></a>
+        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="/assets/img/logos/google.svg" alt="..." aria-label="Google Logo"/></a>
       </div>
       <div class="col-md-3 col-sm-6 my-3">
-        <a href="#!"
-          ><img
-            class="img-fluid img-brand d-block mx-auto"
-            src="/assets/img/logos/facebook.svg"
-            alt="..."
-            aria-label="Facebook Logo"
-        /></a>
+        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="/assets/img/logos/facebook.svg" alt="..." aria-label="Facebook Logo"/></a>
       </div>
       <div class="col-md-3 col-sm-6 my-3">
-        <a href="#!"
-          ><img
-            class="img-fluid img-brand d-block mx-auto"
-            src="/assets/img/logos/ibm.svg"
-            alt="..."
-            aria-label="IBM Logo"
-        /></a>
+        <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="/assets/img/logos/ibm.svg" alt="..." aria-label="IBM Logo"/></a>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Contact-->
