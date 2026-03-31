@@ -1,5 +1,5 @@
 <!-- Công bố năng lực -->
-<% if (documents && documents.length > 0) { %>
+<% if (locals.documents && documents.length > 0) { %>
 <section class="page-section bg-light" id="cong-bo-nang-luc-home">
   <div class="container">
     <ul class="nav nav-tabs mb-4" id="docTabsHome" role="tablist">
@@ -45,7 +45,7 @@
       <% }) %>
     </div>
 
-    <% if (totalDocPages > 1) { %>
+    <% if (locals.totalDocPages && totalDocPages > 1) { %>
     <div class="d-flex justify-content-center mt-4">
       <ul class="pagination">
         <li class="page-item <%= currentDocPage === 1 ? 'disabled' : '' %>">
