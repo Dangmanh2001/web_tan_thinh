@@ -20,6 +20,13 @@
 
       <div class="form-group">
         <label>Nội dung</label>
+        <div class="mb-2">
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('imgPickerSvc').click()">
+            <i class="fas fa-image"></i> Chèn ảnh vào nội dung
+          </button>
+          <input type="file" id="imgPickerSvc" accept="image/*" multiple style="display:none" onchange="uploadImagesSvc(this.files)">
+          <span id="uploadStatusSvc" class="ml-2 small text-muted"></span>
+        </div>
         <textarea id="contentEditor" name="content" rows="6"><%= service ? service.content : '' %></textarea>
       </div>
 
@@ -39,12 +46,38 @@
   </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
 <script>
   CKEDITOR.replace('contentEditor');
+
   document.querySelector('form').addEventListener('submit', function () {
     for (let instance in CKEDITOR.instances) {
       CKEDITOR.instances[instance].updateElement();
     }
   });
+
+  async function uploadImagesSvc(files) {
+    const status = document.getElementById('uploadStatusSvc');
+    status.textContent = 'Đang tải lên...';
+    let count = 0;
+    for (const file of files) {
+      const form = new FormData();
+      form.append('upload', file);
+      try {
+        const res = await fetch('/dashboard/upload-image', { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success && data.url) {
+          CKEDITOR.instances['contentEditor'].insertHtml(
+            `<img src="${data.url}" style="max-width:100%; height:auto; margin:8px 0;">`
+          );
+          count++;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    status.textContent = count > 0 ? `✓ Đã chèn ${count} ảnh` : '✗ Tải lên thất bại';
+    setTimeout(() => { status.textContent = ''; }, 3000);
+    document.getElementById('imgPickerSvc').value = '';
+  }
 </script>

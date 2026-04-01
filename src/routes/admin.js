@@ -9,6 +9,13 @@ const documentController = require("../controllers/admin/document.controller");
 const searchController = require("../controllers/admin/search.controller");
 const { isAdminOrEditor, isAdmin } = require("../middlewares/auth.middleware");
 const userController = require("../controllers/admin/user.controller");
+const multer = require("multer");
+const path = require("path");
+const uploadImageStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, path.join(__dirname, "../public/images")),
+  filename: (_req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+});
+const uploadImage = multer({ storage: uploadImageStorage });
 
 var router = express.Router();
 
@@ -63,5 +70,11 @@ router.post("/users/create", isAdmin, userController.create);
 router.get("/users/edit/:id", isAdmin, userController.editForm);
 router.post("/users/edit/:id", isAdmin, userController.edit);
 router.post("/users/delete/:id", isAdmin, userController.delete);
+
+// Upload ảnh cho CKEditor
+router.post("/upload-image", uploadImage.single("upload"), (req, res) => {
+  if (!req.file) return res.json({ success: false, message: "Không có file" });
+  res.json({ success: true, url: "/images/" + req.file.filename });
+});
 
 module.exports = router;

@@ -28,6 +28,13 @@
 
       <div class="form-group">
         <label>Nội dung</label>
+        <div class="mb-2">
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('imgPicker').click()">
+            <i class="fas fa-image"></i> Chèn ảnh vào nội dung
+          </button>
+          <input type="file" id="imgPicker" accept="image/*" multiple style="display:none" onchange="uploadImages(this.files)">
+          <span id="uploadStatus" class="ml-2 small text-muted"></span>
+        </div>
         <textarea id="newsContent" name="content" rows="8"><%= post ? post.content : '' %></textarea>
       </div>
 
@@ -47,50 +54,38 @@
   </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-<script>
-  ClassicEditor
-    .create(document.querySelector('#newsContent'), {
-      toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|',
-                'bulletedList', 'numberedList', '|',
-                'blockQuote', 'link', '|',
-                'undo', 'redo'],
-                htmlSupport: {
-	allow: [
-		{
-			name: /.*/,
-			attributes: true,
-			classes: true,
-			styles: true
-		}
-	]
-},
-      heading: {
-        options: [
-          { model: 'paragraph', title: 'Đoạn văn', class: 'ck-heading_paragraph' },
-          { model: 'heading1', view: 'h1', title: 'Tiêu đề 1', class: 'ck-heading_heading1' },
-          { model: 'heading2', view: 'h2', title: 'Tiêu đề 2', class: 'ck-heading_heading2' },
-          { model: 'heading3', view: 'h3', title: 'Tiêu đề 3', class: 'ck-heading_heading3' },
-          { model: 'heading4', view: 'h4', title: 'Tiêu đề 4', class: 'ck-heading_heading4' },
-          { model: 'heading5', view: 'h5', title: 'Tiêu đề 5', class: 'ck-heading_heading5' },
-          { model: 'heading6', view: 'h6', title: 'Tiêu đề 6', class: 'ck-heading_heading6' },
-        ]
-      }
-    })
-    .then(editor => {
-      document.querySelector('form').addEventListener('submit', () => {
-        document.querySelector('#newsContent').value = editor.getData();
-      });
-    });
-</script>
-
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
 <script>
   CKEDITOR.replace('newsContent');
-</script>
-<script>
+
   document.querySelector('form').addEventListener('submit', function () {
     for (let instance in CKEDITOR.instances) {
       CKEDITOR.instances[instance].updateElement();
     }
   });
+
+  async function uploadImages(files) {
+    const status = document.getElementById('uploadStatus');
+    status.textContent = 'Đang tải lên...';
+    let count = 0;
+    for (const file of files) {
+      const form = new FormData();
+      form.append('upload', file);
+      try {
+        const res = await fetch('/dashboard/upload-image', { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success && data.url) {
+          CKEDITOR.instances['newsContent'].insertHtml(
+            `<img src="${data.url}" style="max-width:100%; height:auto; margin:8px 0;">`
+          );
+          count++;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    status.textContent = count > 0 ? `✓ Đã chèn ${count} ảnh` : '✗ Tải lên thất bại';
+    setTimeout(() => { status.textContent = ''; }, 3000);
+    document.getElementById('imgPicker').value = '';
+  }
 </script>
